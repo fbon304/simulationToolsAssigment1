@@ -32,9 +32,19 @@ if __name__ == "__main__":
     t_f = 10
     ncp = 10000
 
+    theta_0 = 120.0
+    r_0 = 1.0
+
     # Define the problem in Assimulo
     problem = apro.Explicit_Problem(
-        spring_pendulum, t0=0, y0=[1 / math.sqrt(2) + 0.02, 1 / math.sqrt(2), 0, 0]
+        spring_pendulum,
+        t0=0,
+        y0=[
+            r_0 * math.sin(theta_0 * math.pi / 180),
+            r_0 * -math.cos(theta_0 * math.pi / 180),
+            0,
+            0,
+        ],
     )
     problem.name = f"Spring pendulum, $k={k}$"
 
@@ -59,4 +69,6 @@ if __name__ == "__main__":
     plt.title(problem.name)
     plt.xlabel(r"$x_1(t)$")
     plt.ylabel(r"$x_2(t)$")
+    ax = plt.gca()
+    ax.set_aspect("equal", adjustable="box")
     plt.show()
