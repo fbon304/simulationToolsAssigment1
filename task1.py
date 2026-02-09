@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Parameters
-k = 10**4
-g = 4
+k = 10**3
+g = 1
 
 
 # Define the first order ODE system
@@ -17,23 +17,23 @@ def lambda_fn(y1, y2):
 
 
 def spring_pendulum(t, x):
-    xvec = np.zeros_like(x)
+    xdot = np.zeros_like(x)
 
-    xvec[0] = x[2]
-    xvec[1] = x[3]
-    xvec[2] = -x[0] * lambda_fn(x[0], x[1])
-    xvec[3] = -x[1] * lambda_fn(x[0], x[1]) - g
+    xdot[0] = x[2]
+    xdot[1] = x[3]
+    xdot[2] = -x[0] * lambda_fn(x[0], x[1])
+    xdot[3] = -x[1] * lambda_fn(x[0], x[1]) - g
 
-    return xvec
+    return xdot
 
 
 if __name__ == "__main__":
     # Simulation parameters
-    t_f = 10
+    t_f = 100
     ncp = 10000
 
-    theta_0 = 120.0
-    r_0 = 1.0
+    theta_0 = 90.0
+    r_0 = 1.5
 
     # Define the problem in Assimulo
     problem = apro.Explicit_Problem(
