@@ -5,6 +5,10 @@ import assimulo.solvers as asol
 import matplotlib.pyplot as plt
 import numpy as np
 
+from BDF4_Assimulo import BDF_4_Newton
+from BDF2_Assimulo import BDF_2
+
+
 # Parameters
 k = 100
 g = 1
@@ -49,9 +53,8 @@ if __name__ == "__main__":
     problem.name = f"Spring pendulum, $k={k}$"
 
     # Initialize the solver
-    solver = asol.CVode(problem)
+    solver = BDF_4_Newton(problem)
     solver.reset()
-    solver.maxord = 4
 
     # Run the simulation
     t_sol, x_sol = solver.simulate(t_f, ncp)
