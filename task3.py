@@ -10,7 +10,7 @@ from BDF2_Assimulo import BDF_2
 
 
 # Parameters
-k = 10000
+k = 100000
 g = 1
 
 
@@ -34,7 +34,7 @@ def spring_pendulum(t, x):
 if __name__ == "__main__":
     # Simulation parameters
     t_f = 100
-    ncp = 1000
+    ncp = 10000
 
     theta_0 = 90.0
     r_0 = 1.1

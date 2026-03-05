@@ -13,7 +13,7 @@ from BDF2_Assimulo import BDF_2
 k = 1  # will be overwritten inside the loop
 g = 1
 
-k_values = [1, 10, 100, 1000, 10000]
+k_values = [10, 100, 1000, 10000, 100000]
 
 # Define the first order ODE system
 def lambda_fn(y1, y2):
@@ -41,7 +41,7 @@ def save_plots(t_sol, x_sol, method_name: str, h_value: str, k_value: int, out_d
     plt.legend()
 
     coord_path = os.path.join(out_dir, f"Coordinates_{method_name}_{h_value}_k{k_value}.png")
-    plt.savefig(coord_path, dpi=300, bbox_inches="tight")
+    plt.savefig(coord_path, dpi=300)
     plt.close()
 
     # 2) Phase / trajectory in x1-x2
@@ -54,7 +54,7 @@ def save_plots(t_sol, x_sol, method_name: str, h_value: str, k_value: int, out_d
     ax.set_aspect("equal", adjustable="box")
 
     phase_path = os.path.join(out_dir, f"Phase_{method_name}_{h_value}_k{k_value}.png")
-    plt.savefig(phase_path, dpi=300, bbox_inches="tight")
+    plt.savefig(phase_path, dpi=300)
     plt.close()
 
 if __name__ == "__main__":
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     # Simulation parameters
     t_f = 100
-    ncp = 1000
+    ncp = 10000
 
     # Initial condition
     theta_0 = 90.0
