@@ -30,7 +30,7 @@ def spring_pendulum(t, x):
 if __name__ == "__main__":
     # Simulation parameters
     t_f = 100
-    ncp = 1000
+    ncp = 10000
 
     theta_0 = 100.0
     r_0 = 1.5

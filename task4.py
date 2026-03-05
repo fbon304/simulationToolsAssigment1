@@ -5,8 +5,6 @@ import assimulo.problem as apro
 import assimulo.solvers as asol
 import matplotlib.pyplot as plt
 import numpy as np
-from BDF2_Assimulo import BDF_2
-from BDF4_Assimulo import BDF_4_Newton
 
 # Parameters
 k = 1  # will be overwritten inside the loop
@@ -32,9 +30,7 @@ def spring_pendulum(t, x):
     return xdot
 
 
-def save_plots(
-    t_sol, x_sol, method_name: str, h_value: str, k_value: int, out_dir: str
-):
+def save_plots(t_sol, x_sol, method_name: str, k_value: int, out_dir: str):
     # 1) Coordinates vs time
     plt.figure()
     plt.plot(t_sol, x_sol[:, 0], label=r"$x_1(t)$")
@@ -44,9 +40,7 @@ def save_plots(
     plt.ylabel(r"$x_1, x_2(t)$")
     plt.legend()
 
-    coord_path = os.path.join(
-        out_dir, f"Coordinates_{method_name}_{h_value}_k{k_value}.png"
-    )
+    coord_path = os.path.join(out_dir, f"Coordinates_{method_name}_k{k_value}.png")
     plt.savefig(coord_path, dpi=300, bbox_inches="tight")
     plt.close()
 
@@ -59,8 +53,8 @@ def save_plots(
     ax = plt.gca()
     ax.set_aspect("equal", adjustable="box")
 
-    phase_path = os.path.join(out_dir, f"Phase_{method_name}_{h_value}_k{k_value}.png")
-    plt.savefig(phase_path, dpi=300)
+    phase_path = os.path.join(out_dir, f"Phase_{method_name}_k{k_value}.png")
+    plt.savefig(phase_path, dpi=300, bbox_inches="tight")
     plt.close()
 
 
@@ -97,40 +91,27 @@ if __name__ == "__main__":
         problem.name = f"Spring pendulum, $k={k}$"
 
         # --- Solver 1: BDF4 ---
-        solver = BDF_4_Newton(problem)
+        solver = asol.CVode(problem)
+        solver.maxord = 4
         solver.reset()
         t_sol, x_sol = solver.simulate(t_f, ncp)
         save_plots(
             t_sol,
             x_sol,
             method_name="BDF4",
-            h_value=f"h{h_bdf}",
             k_value=k,
             out_dir=out_dir,
         )
 
         # --- Solver 2: BDF2 ---
-        solver = BDF_2(problem)
+        solver = asol.CVode(problem)
+        solver.maxord = 2
         solver.reset()
         t_sol, x_sol = solver.simulate(t_f, ncp)
         save_plots(
             t_sol,
             x_sol,
             method_name="BDF2",
-            h_value=f"h{h_bdf}",
-            k_value=k,
-            out_dir=out_dir,
-        )
-
-        # --- Solver 3: Explicit Euler (Assimulo) ---
-        solver = asol.ExplicitEuler(problem)
-        solver.h = h_euler
-        t_sol, x_sol = solver.simulate(t_f, ncp)
-        save_plots(
-            t_sol,
-            x_sol,
-            method_name="Euler",
-            h_value=f"h{h_euler}",
             k_value=k,
             out_dir=out_dir,
         )
