@@ -11,13 +11,13 @@ class BDF_2(Explicit_ODE):
     """
     tol=1.e-8     
     maxit=100     
-    maxsteps=50000
+    maxsteps=500000
     
     def __init__(self, problem):
         Explicit_ODE.__init__(self, problem) #Calls the base class
         
         #Solver options
-        self.options["h"] = 0.01
+        self.options["h"] = 0.001
         
         #Statistics
         self.statistics["nsteps"] = 0

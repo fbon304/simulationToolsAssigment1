@@ -10,13 +10,13 @@ from BDF2_Assimulo import BDF_2
 
 
 # Parameters
-k = 100
+k = 10000
 g = 1
 
 
 # Define the first order ODE system
 def lambda_fn(y1, y2):
-    sqrt_term = math.sqrt(y1**2 + y2**2)
+    sqrt_term = math.hypot(y1, y2)
     return k * (sqrt_term - 1) / sqrt_term
 
 
@@ -36,8 +36,8 @@ if __name__ == "__main__":
     t_f = 100
     ncp = 1000
 
-    theta_0 = 100.0
-    r_0 = 1.5
+    theta_0 = 90.0
+    r_0 = 1.1
 
     # Define the problem in Assimulo
     problem = apro.Explicit_Problem(
@@ -53,7 +53,16 @@ if __name__ == "__main__":
     problem.name = f"Spring pendulum, $k={k}$"
 
     # Initialize the solver
+#    option 1
     solver = BDF_4_Newton(problem)
+
+#    option 2
+#    solver = BDF_2(problem)
+
+#    option 3
+#    solver = asol.ExplicitEuler(problem)
+#    solver.h = 0.001  
+
     solver.reset()
 
     # Run the simulation

@@ -9,15 +9,15 @@ class BDF_4_Newton(Explicit_ODE):
     BDF-4 with Newton iteration.
     """
 
-    tol = 1e-10
-    maxit = 30
-    maxsteps = 50000
-    fd_eps = 1e-8  # finite-difference step for numerical Jacobian
+    tol = 1e-8
+    maxit = 100
+    maxsteps = 500000
+    fd_eps = 1e-10  # finite-difference step for numerical Jacobian
 
     def __init__(self, problem):
         Explicit_ODE.__init__(self, problem)
 
-        self.options["h"] = 0.01
+        self.options["h"] = 0.001
 
         self.statistics["nsteps"] = 0
         self.statistics["nfcns"]  = 0
@@ -60,7 +60,6 @@ class BDF_4_Newton(Explicit_ODE):
         Startup is done with implicit BDF1/BDF2/BDF3, then BDF4.
         """
         h = self.options["h"]
-        h = min(h, abs(tf - t))
 
         tres = []
         yres = []
@@ -84,7 +83,7 @@ class BDF_4_Newton(Explicit_ODE):
             h = min(self.h, abs(tf - t))
 
             if i == 0:
-                t_np1, y_np1 = self.step_BDF1_Newton(t, y, h)
+                t_np1, y_np1 = self.step_EE(t, y, h)
             elif i == 1:
                 t_np1, y_np1 = self.step_BDF2_Newton([t, t_nm1], [y, y_nm1], h)
             elif i == 2:
@@ -112,7 +111,15 @@ class BDF_4_Newton(Explicit_ODE):
         """
         ys = [np.asarray(v, dtype=float) for v in y_vals]
         t_np1 = t_n + h
-        yk = ys[0].copy()
+        #Extra: mejor prediccion pero en la consigna decia que alcanzaba predictor de orden 0
+        """
+        if len(ys) > 1:
+          yk = ys[0] + (ys[0] - ys[1])
+        else:
+            yk = ys[0].copy()
+        """
+
+        yk = ys[0].copy()    
         I = np.eye(yk.size)
 
         const = np.zeros_like(yk)
@@ -142,9 +149,10 @@ class BDF_4_Newton(Explicit_ODE):
 
         raise ODE_Exception(f"Newton did not converge within {self.maxit} iterations at t={t_np1}")
 
-    def step_BDF1_Newton(self, t_n, y_n, h):
-        alpha = [1.0, -1.0]
-        return self._step_BDF_Newton(alpha, t_n, [y_n], h)
+    def step_EE(self, t, y, h):
+        self.statistics["nfcns"] += 1
+        f = self.problem.rhs
+        return t + h, y + h*f(t, y)
 
     def step_BDF2_Newton(self, T, Y, h):
         alpha = [3.0/2.0, -2.0, 1.0/2.0]
@@ -180,19 +188,4 @@ class BDF_4_Newton(Explicit_ODE):
         self.log_message('\nSolver options:\n', verbose)
         self.log_message(' Solver            : BDF4', verbose)
         self.log_message(' Solver type       : Newton iteration\n', verbose)
-
-
-# if __name__ == "__main__":
-#     # ----------------- Example usage (optional) -----------------
-#     def pend(t, y):
-#         gl = 13.7503671
-#         return np.array([y[1], -gl*np.sin(y[0])])
-#
-#     pend_mod = Explicit_Problem(pend, y0=np.array([2.*np.pi, 1.]))
-#     pend_mod.name = 'Nonlinear Pendulum (BDF4 Newton)'
-#
-#     sim = BDF_4_Newton(pend_mod)
-#     t, y = sim.simulate(1)
-#     sim.plot()
-#     mpl.show()
     
